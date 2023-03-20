@@ -1,0 +1,5 @@
+images:
+  ### new iamges
+  hub.pingcap.net/ee/ci-tidb:
+    context: images/new-ci/tidb
+    build_args: []
