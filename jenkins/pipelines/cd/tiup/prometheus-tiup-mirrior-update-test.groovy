@@ -108,9 +108,11 @@ def pack = { version, os, arch ->
 }
 
 def update = { version, os, arch ->
-    download version, os, arch
-    unpack version, os, arch
-    pack version, os, arch
+    retry(3){
+        download version, os, arch
+        unpack version, os, arch
+        pack version, os, arch
+    }
 }
 
 def run_with_pod(Closure body) {
