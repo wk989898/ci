@@ -557,6 +557,7 @@ node("build_go1130") {
                         }
                     }
                 }
+                parallel builds
             }
 
             multi_os_update = [:]
