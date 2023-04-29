@@ -548,7 +548,15 @@ node("build_go1130") {
                         [$class: 'BooleanParameterValue', name: 'ARCH_MAC', value: params.ARCH_MAC],
                         [$class: 'BooleanParameterValue', name: 'ARCH_MAC_ARM', value: params.ARCH_MAC_ARM],
                 ]
-                parallel builds
+                builds["TiUP build prometheus"] = {
+                    retry(3) {
+                        if (TIUP_ENV == "prod") {
+                            build(job: "prometheus-tiup-mirrior-update-test", wait: true, parameters: paramsPROMETHEUS)
+                        } else {
+                            build(job: "prometheus-tiup-mirror-update-test-hotfix", wait: true, parameters: paramsPROMETHEUS)
+                        }
+                    }
+                }
             }
 
             multi_os_update = [:]
