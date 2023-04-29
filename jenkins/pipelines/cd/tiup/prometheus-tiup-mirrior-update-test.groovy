@@ -94,7 +94,6 @@ def pack = { version, os, arch ->
 
     cd ..
 
-    #tiup package "prometheus" --hide --arch ${arch} --os "${os}" --desc "The Prometheus monitoring system and time series database." --entry "prometheus/prometheus" --name prometheus --release "${RELEASE_TAG}"
     rm -rf package
     mkdir -p package
     if [ ${RELEASE_TAG} \\> "v5.3.0" ] || [ ${RELEASE_TAG} == "v5.3.0" ] || [ ${RELEASE_TAG} == "nightly" ] ; then \
@@ -102,17 +101,21 @@ def pack = { version, os, arch ->
     else
         tar czvf package/prometheus-${RELEASE_TAG}-${os}-${arch}.tar.gz prometheus
     fi
-    tiup mirror publish prometheus ${TIDB_VERSION} package/prometheus-${RELEASE_TAG}-${os}-${arch}.tar.gz "prometheus/prometheus" --arch ${arch} --os ${os} --desc="The Prometheus monitoring system and time series database"
+    """
+    retry(3){
+        sh """
+        tiup mirror publish prometheus ${TIDB_VERSION} package/prometheus-${RELEASE_TAG}-${os}-${arch}.tar.gz "prometheus/prometheus" --arch ${arch} --os ${os} --desc="The Prometheus monitoring system and time series database"
+        """
+    }
+    sh """
     rm -rf prometheus
     """
 }
 
 def update = { version, os, arch ->
-    retry(3){
-        download version, os, arch
-        unpack version, os, arch
-        pack version, os, arch
-    }
+    download version, os, arch
+    unpack version, os, arch
+    pack version, os, arch
 }
 
 def run_with_pod(Closure body) {
