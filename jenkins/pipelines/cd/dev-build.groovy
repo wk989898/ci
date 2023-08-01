@@ -103,6 +103,8 @@ spec:
                     Image = "hub.pingcap.net/devbuild/$Product:$Version-$BUILD_NUMBER"
                     ImageForGcr = "gcr.io/pingcap-public/dbaas/$Product:$Version-$BUILD_NUMBER-dev"
                     if (params.IsHotfix.toBoolean()){
+                        def ts13 = date.getTime() / 1000
+                        def ts10 = (Long) ts13
                         Image = "hub.pingcap.net/qa/$Product:$Version-$BUILD_NUMBER"
                         ImageForGcr = "gcr.io/pingcap-public/dbaas/$Product:$Version-$ts10"
                         BinPathDict["amd64"] = "builds/hotfix/$Product/$Version/$BUILD_NUMBER/$Product-patch-linux-amd64.tar.gz"
